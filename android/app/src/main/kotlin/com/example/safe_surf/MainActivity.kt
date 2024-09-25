@@ -6,32 +6,51 @@ import io.flutter.plugin.common.MethodChannel
 import android.content.Intent
 
 class MainActivity: FlutterActivity() {
-    private val CHANNEL = "com.example.safe_surf/device_admin"
-    private lateinit var channel: MethodChannel
+    private val DEVICE_ADMIN_CHANNEL = "com.example.safe_surf/device_admin"
+    private val PASSWORD_CHANNEL = "com.example.safe_surf/password"
+    private lateinit var deviceAdminChannel: MethodChannel
+    private lateinit var passwordChannel: MethodChannel
     private lateinit var deviceAdminManager: DeviceAdminManager
     
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)        
 
-        channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
+        deviceAdminChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, DEVICE_ADMIN_CHANNEL)
+        passwordChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, PASSWORD_CHANNEL)
         deviceAdminManager = DeviceAdminManager(this)
 
-        channel.setMethodCallHandler { call, result ->
+        // Password channel setup
+        passwordChannel.setMethodCallHandler { call, result ->
+            when (call.method) {
+                "isPasswordSet" -> {
+                    // TODO: Implement isPasswordSet logic
+                    result.success(true) // Placeholder, replace with actual implementation
+                }
+                "verifyPassword" -> {
+                    val password = call.argument<String>("password")
+                    // TODO: Implement verifyPassword logic
+                    result.success(true) // Placeholder, replace with actual implementation
+                }
+                else -> {
+                    result.notImplemented()
+                }
+            }
+        }
+
+        // Device admin channel setup
+        deviceAdminChannel.setMethodCallHandler { call, result ->
            when (call.method) {
                 "isAdminActive" -> {
                     result.success(deviceAdminManager.isAdminActive())
                 }
-
                 "requestAdminPrivileges" -> {
                     deviceAdminManager.requestAdminPrivileges(this)
                     result.success(null)
                 }
-
                 "lockScreen" -> {
                     deviceAdminManager.lockScreen()
                     result.success(null)
                 }
-
                 else -> {
                     result.notImplemented()
                 }
