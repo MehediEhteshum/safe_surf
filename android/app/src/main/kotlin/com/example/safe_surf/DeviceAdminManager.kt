@@ -29,6 +29,12 @@ class DeviceAdminManager(private val context: Context) {
         }
     }
 
+    fun attemptAdminStatusChange(onPasswordRequired: () -> Unit) {
+        if (isAdminActive()) {
+            onPasswordRequired()
+        }
+    }
+
     companion object {
         const val REQUEST_CODE_ENABLE_ADMIN = 1
     }
