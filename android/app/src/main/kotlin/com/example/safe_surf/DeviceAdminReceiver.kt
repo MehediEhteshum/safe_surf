@@ -6,79 +6,77 @@ import android.content.Intent
 import android.app.AlertDialog
 import android.widget.EditText
 import android.view.WindowManager
-import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import io.flutter.embedding.android.FlutterActivity
 
 class MyDeviceAdminReceiver : DeviceAdminReceiver() {
+    private lateinit var channel: MethodChannel
     private val CHANNEL = "com.example.safe_surf/password"
-    private lateinit var flutterEngine: FlutterEngine
+    private var passwordDialog: AlertDialog? = null
+    private lateinit var errorTextView: TextView
 
     override fun onDisableRequested(context: Context, intent: Intent): CharSequence {
+        setupMethodChannel(context)
         val devicePolicyManager = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as android.app.admin.DevicePolicyManager
         
-        if (!::flutterEngine.isInitialized) {
-            flutterEngine = FlutterEngine(context)
-            flutterEngine.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault())
+        channel.invokeMethod("isPasswordSet", null) { isSet ->
+            if (isSet as Boolean) {
+                showPasswordPrompt(context)
+            }
         }
 
-        checkPasswordAndPrompt(context)
-        
         // Lock the screen
         devicePolicyManager.lockNow()
-        
+
         return "Disabling device admin will remove security features of this app."
     }
 
-    private fun checkPasswordAndPrompt(context: Context) {
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).invokeMethod(
-            "isPasswordSet",
-            null,
-            object : MethodChannel.Result {
-                override fun success(result: Any?) {
-                    if (result as Boolean) {
-                        showPasswordPrompt(context)
-                    }
-                }
-
-                override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
-                    // TODO: Handle error
-                }
-
-                override fun notImplemented() {
-                    // TODO: Handle not implemented
-                }
-            }
-        )
+    private fun setupMethodChannel(context: Context) {
+        val flutterEngine = (context as FlutterActivity).flutterEngine
+        channel = MethodChannel(flutterEngine?.dartExecutor?.binaryMessenger, CHANNEL)
     }
 
-    private fun showPasswordPrompt(context: Context) {
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle("Enter Password")
-        builder.setCancelable(false)  // Prevent dismissing by tapping outside
+    private fun showPasswordPrompt(context: Context, errorMessage: String? = null) {
+        if (passwordDialog == null) {
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("Enter Password")
+            builder.setCancelable(false)  // Prevent dismissing by tapping outside
 
-        val input = EditText(context)
-        builder.setView(input)
+            val view = LayoutInflater.from(context).inflate(R.layout.password_prompt, null)
+            val input = view.findViewById<EditText>(R.id.password_input)
+            errorTextView = view.findViewById(R.id.error_message)
+            builder.setView(view)
 
-        builder.setPositiveButton("OK") { _, _ ->
-            val password = input.text.toString()
-            verifyPassword(context, password)
+            builder.setPositiveButton("OK") { _, _ ->
+                val password = input.text.toString()
+                verifyPassword(context, password)
+            }
+
+            passwordDialog = builder.create()
+            passwordDialog?.window?.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT)
         }
 
-        val dialog = builder.create()
-        dialog.window?.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT)
-        dialog.show()
+        errorTextView.text = errorMessage ?: ""
+        errorTextView.visibility = if (errorMessage != null) View.VISIBLE else View.GONE
+
+        passwordDialog?.show()
+    }
+
+    private fun dismissPasswordPrompt() {
+        passwordDialog?.dismiss()
+        passwordDialog = null
     }
 
     private fun verifyPassword(context: Context, password: String) {
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).invokeMethod(
+        channel.invokeMethod(
             "verifyPassword",
             password,
             object : MethodChannel.Result {
                 override fun success(result: Any?) {
                     if (result as Boolean) {
-                        // TODO: Password correct, proceed with disabling
+                        dismissPasswordPrompt()
                     } else {
-                        // TODO: Password incorrect, show error or retry
+                        showPasswordPrompt(context, "Incorrect password. Please try again.")
                     }
                 }
 
