@@ -15,22 +15,43 @@ class HomePageState extends State<HomePage> {
   final PasswordManager _passwordManager = PasswordManager();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordSet = false;
+  bool _isAdminActive = false;
 
   @override
   void initState() {
     super.initState();
     _checkAndRequestAdminPrivileges();
-    _checkPasswordStatus();
+    platform.setMethodCallHandler(_handleMethodCall);
+  }
+
+  Future<void> _handleMethodCall(MethodCall call) async {
+    switch (call.method) {
+      case 'onAdminResult':
+        bool result = call.arguments as bool;
+        setState(() {
+          _isAdminActive = result;
+        });
+        if (result) {
+          _checkPasswordStatus();
+        }
+        break;
+    }
   }
 
   Future<void> _checkAndRequestAdminPrivileges() async {
     try {
       bool isAdminActive = await platform.invokeMethod('isAdminActive');
+      setState(() {
+        _isAdminActive = isAdminActive;
+      });
       if (!isAdminActive) {
         await platform.invokeMethod('requestAdminPrivileges');
+      } else {
+        _checkPasswordStatus();
       }
-    } on PlatformException {
-      // TO DO: Handle or log the error
+    } on PlatformException catch (e) {
+      debugPrint("Failed to get admin status: '${e.message}'.");
+      // Handle or log the error
     }
   }
 
@@ -63,12 +84,14 @@ class HomePageState extends State<HomePage> {
         title: const Text('Safe Surf'),
       ),
       body: Center(
-        child: _isPasswordSet
-            ? const Text('Your app content goes here')
-            : PasswordSetupWidget(
-                passwordController: _passwordController,
-                onSetPassword: _setPassword,
-              ),
+        child: _isAdminActive
+            ? (_isPasswordSet
+                ? const Text('Your app content goes here')
+                : PasswordSetupWidget(
+                    passwordController: _passwordController,
+                    onSetPassword: _setPassword,
+                  ))
+            : const Text('Please grant admin permissions to continue'),
       ),
     );
   }
