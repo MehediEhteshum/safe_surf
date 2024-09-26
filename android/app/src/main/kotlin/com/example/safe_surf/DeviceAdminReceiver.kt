@@ -6,8 +6,11 @@ import android.content.Intent
 import android.app.AlertDialog
 import android.widget.EditText
 import android.view.WindowManager
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.TextView
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
 
 class MyDeviceAdminReceiver : DeviceAdminReceiver() {
     private lateinit var channel: MethodChannel
@@ -19,11 +22,21 @@ class MyDeviceAdminReceiver : DeviceAdminReceiver() {
         setupMethodChannel(context)
         val devicePolicyManager = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as android.app.admin.DevicePolicyManager
         
-        channel.invokeMethod("isPasswordSet", null) { isSet ->
-            if (isSet as Boolean) {
-                showPasswordPrompt(context)
+        channel.invokeMethod("isPasswordSet", null, object : MethodChannel.Result {
+            override fun success(result: Any?) {
+                if (result as Boolean) {
+                    showPasswordPrompt(context)
+                }
             }
-        }
+
+            override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
+                // TODO: Handle error
+            }
+
+            override fun notImplemented() {
+                // TODO: Handle not implemented
+            }
+        })
 
         // Lock the screen
         devicePolicyManager.lockNow()
@@ -32,8 +45,8 @@ class MyDeviceAdminReceiver : DeviceAdminReceiver() {
     }
 
     private fun setupMethodChannel(context: Context) {
-        val flutterEngine = (context as FlutterActivity).flutterEngine
-        channel = MethodChannel(flutterEngine?.dartExecutor?.binaryMessenger, CHANNEL)
+        val flutterEngine = (context.applicationContext as FlutterApplication).flutterEngine
+        channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
     }
 
     private fun showPasswordPrompt(context: Context, errorMessage: String? = null) {
@@ -42,7 +55,8 @@ class MyDeviceAdminReceiver : DeviceAdminReceiver() {
             builder.setTitle("Enter Password")
             builder.setCancelable(false)  // Prevent dismissing by tapping outside
 
-            val view = LayoutInflater.from(context).inflate(R.layout.password_prompt, null)
+            val inflater = LayoutInflater.from(context)
+            val view = inflater.inflate(R.layout.password_prompt, null)
             val input = view.findViewById<EditText>(R.id.password_input)
             errorTextView = view.findViewById(R.id.error_message)
             builder.setView(view)

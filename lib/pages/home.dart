@@ -30,7 +30,7 @@ class HomePageState extends State<HomePage> {
         await platform.invokeMethod('requestAdminPrivileges');
       }
     } on PlatformException {
-      // Handle or log the error
+      // TO DO: Handle or log the error
     }
   }
 
