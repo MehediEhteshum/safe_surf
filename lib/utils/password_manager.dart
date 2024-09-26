@@ -1,44 +1,23 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class PasswordManager {
-  static const String _passwordKey = 'app_password';
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-
-  static const platform = MethodChannel('com.example.safe_surf/password');
+  static const platform = MethodChannel('com.example.safe_surf/device_admin');
 
   Future<void> setPassword(String password) async {
-    await _secureStorage.write(key: _passwordKey, value: password);
-  }
-
-  Future<String?> getPassword() async {
-    return await _secureStorage.read(key: _passwordKey);
+    try {
+      await platform.invokeMethod('setPassword', {'password': password});
+    } on PlatformException catch (e) {
+      debugPrint("Failed to set password: '${e.message}'.");
+    }
   }
 
   Future<bool> isPasswordSet() async {
-    String? password = await getPassword();
-    return password != null && password.isNotEmpty;
-  }
-
-  Future<bool> verifyPassword(String inputPassword) async {
-    String? storedPassword = await getPassword();
-    return storedPassword == inputPassword;
-  }
-
-  void setupMethodChannel() {
-    platform.setMethodCallHandler((call) async {
-      switch (call.method) {
-        case 'isPasswordSet':
-          return await isPasswordSet();
-        case 'verifyPassword':
-          final password = call.arguments as String;
-          return await verifyPassword(password);
-        default:
-          throw PlatformException(
-            code: 'NotImplemented',
-            message: 'Method ${call.method} not implemented',
-          );
-      }
-    });
+    try {
+      return await platform.invokeMethod('isPasswordSet');
+    } on PlatformException catch (e) {
+      debugPrint("Failed to check if password is set: '${e.message}'.");
+      return false;
+    }
   }
 }
