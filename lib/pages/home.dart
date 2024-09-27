@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:safe_surf/repos/dns_blocker/i_dns_blocker_repo.dart';
+import 'package:safe_surf/utils/dependency_container.dart';
+import 'package:safe_surf/widgets/dns_blocker/dns_blocker_toggle.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,12 +35,25 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Safe Surf'),
-      ),
-      body: const Center(
-        child: Text('Your app content goes here'),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<IDnsBlockerRepo>(
+          create: (_) => getIt<IDnsBlockerRepo>(),
+        ),
+      ],
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Safe Surf'),
+        ),
+        body: Center(
+          child: ListView(
+            shrinkWrap: true,
+            children: const [
+              Text('Block YouTube Shorts'),
+              DnsBlockerToggle(),
+            ],
+          ),
+        ),
       ),
     );
   }

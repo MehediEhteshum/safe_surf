@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:safe_surf/pages/home.dart';
+import 'package:safe_surf/utils/dependency_container.dart';
 
 void main() {
+  initializeDependencies();
   runApp(const MyApp());
 }
 
