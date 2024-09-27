@@ -22,9 +22,12 @@ class DnsProxyServer {
   void _handleRequest(HttpRequest request) async {
     try {
       final query = await _parseDnsQuery(request);
+      debugPrint('Received DNS query: $query');
       if (_shouldBlockQuery(query)) {
+        debugPrint('Blocking query: $query');
         request.response.write(_buildBlockingDnsResponse());
       } else {
+        debugPrint('Forwarding query: $query');
         final response = await dnsClient.lookup(query);
         request.response.write(_buildDnsResponse(response));
       }
@@ -46,6 +49,7 @@ class DnsProxyServer {
   }
 
   List<int> _buildBlockingDnsResponse() {
+    debugPrint('Building blocking DNS response');
     return [
       0,
       0,
@@ -92,6 +96,7 @@ class DnsProxyServer {
   }
 
   List<int> _buildDnsResponse(List<InternetAddress> addresses) {
+    debugPrint('Building DNS response for addresses: $addresses');
     final response = [0, 0, 129, 128, 0, 1, 0, 1, 0, 0, 0, 0];
     response.addAll(addresses.first.rawAddress);
     return response;
