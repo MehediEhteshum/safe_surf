@@ -23,8 +23,9 @@ class HomePageState extends State<HomePage> {
       if (!isAdminActive) {
         await platform.invokeMethod('requestAdminPrivileges');
       }
-    } on PlatformException {
-      rethrow;
+    } on PlatformException catch (e) {
+      debugPrint("Failed to get admin status: '${e.message}'.");
+      // Handle or log the error
     }
   }
 

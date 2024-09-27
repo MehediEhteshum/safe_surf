@@ -18,20 +18,17 @@ class MainActivity: FlutterActivity() {
 
         channel.setMethodCallHandler { call, result ->
            when (call.method) {
-                "isAdminActive" -> {
-                    result.success(deviceAdminManager.isAdminActive())
-                }
-
                 "requestAdminPrivileges" -> {
                     deviceAdminManager.requestAdminPrivileges(this)
                     result.success(null)
                 }
-
+                "isAdminActive" -> {
+                    result.success(deviceAdminManager.isAdminActive())
+                }
                 "lockScreen" -> {
                     deviceAdminManager.lockScreen()
                     result.success(null)
                 }
-
                 else -> {
                     result.notImplemented()
                 }
