@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:safe_surf/pages/home.dart';
-import 'package:safe_surf/pages/yt_no_shorts_webview.dart';
-import 'package:safe_surf/pages/yt_shorts_blocked_webview.dart';
+import 'package:safe_surf/pages/yt_webview.dart';
 import 'package:safe_surf/utils/constants.dart';
 
 class AppRoutes {
@@ -9,11 +8,12 @@ class AppRoutes {
     switch (routeSettings.name) {
       case homeRoute:
         return _materialPageRoute(const HomePage(), routeSettings);
-      case ytShortsBlockedWebRoute:
+      case ytWebRoute:
         return _materialPageRoute(
-            const YtShortsBlockedWebview(), routeSettings);
-      case ytNoShortsWebRoute:
-        return _materialPageRoute(const YtNoShortsWebview(), routeSettings);
+            YtWebview(
+              shortsBlockJS: routeSettings.arguments as String,
+            ),
+            routeSettings);
       default:
         return _materialPageRoute(const HomePage(), routeSettings);
     }

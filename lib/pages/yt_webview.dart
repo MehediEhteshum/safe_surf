@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:safe_surf/widgets/forbidden_view.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class YtShortsBlockedWebview extends StatefulWidget {
-  const YtShortsBlockedWebview({super.key});
+class YtWebview extends StatefulWidget {
+  final String shortsBlockJS;
+
+  const YtWebview({super.key, required this.shortsBlockJS});
 
   @override
-  YtShortsBlockedWebviewState createState() => YtShortsBlockedWebviewState();
+  YtWebviewState createState() => YtWebviewState();
 }
 
-class YtShortsBlockedWebviewState extends State<YtShortsBlockedWebview> {
+class YtWebviewState extends State<YtWebview> {
   late final WebViewController _controller;
   bool _showForbiddenPage = false;
 
@@ -33,16 +35,7 @@ class YtShortsBlockedWebviewState extends State<YtShortsBlockedWebview> {
           },
           onPageFinished: (String url) {
             // Inject JavaScript to detect Shorts dynamically
-            _controller.runJavaScript('''
-              // Block Shorts Page
-
-              setInterval(function() {
-                var isShortsPage = window.location.href.includes('shorts');
-                if (isShortsPage) {
-                  document.querySelector("shorts-page").remove();
-                }
-              }, 5000);
-            ''');
+            _controller.runJavaScript(widget.shortsBlockJS);
           },
         ),
       )

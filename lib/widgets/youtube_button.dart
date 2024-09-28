@@ -3,18 +3,20 @@ import 'package:flutter/material.dart';
 class YoutubeButton extends StatelessWidget {
   final String ytButtonLabel;
   final String ytRouteName;
+  final String shortsBlockJS;
 
   const YoutubeButton({
     super.key,
     required this.ytButtonLabel,
     required this.ytRouteName,
+    required this.shortsBlockJS,
   });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () {
-        Navigator.pushNamed(context, ytRouteName);
+        Navigator.pushNamed(context, ytRouteName, arguments: shortsBlockJS);
       },
       icon: const Icon(
         Icons.ondemand_video,

@@ -43,14 +43,16 @@ class HomePageState extends State<HomePage> {
           children: [
             YoutubeButton(
               ytButtonLabel: 'Youtube Shorts Blocked',
-              ytRouteName: ytShortsBlockedWebRoute,
+              ytRouteName: ytWebRoute,
+              shortsBlockJS: ytShortsBlockedJS,
             ),
             SizedBox(
               height: 15,
             ),
             YoutubeButton(
               ytButtonLabel: 'Youtube No Shorts',
-              ytRouteName: ytNoShortsWebRoute,
+              ytRouteName: ytWebRoute,
+              shortsBlockJS: ytNoShortsJS,
             ),
           ],
         ),
