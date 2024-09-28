@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:safe_surf/utils/constants.dart';
 
 class YoutubeButton extends StatelessWidget {
+  final String ytButtonLabel;
+  final String ytRouteName;
+
   const YoutubeButton({
     super.key,
+    required this.ytButtonLabel,
+    required this.ytRouteName,
   });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () {
-        Navigator.pushNamed(context, ytWebRoute);
+        Navigator.pushNamed(context, ytRouteName);
       },
       icon: const Icon(
         Icons.ondemand_video,
         color: Colors.white,
       ),
-      label: const Text(
-        'YouTube',
-        style: TextStyle(
+      label: Text(
+        ytButtonLabel,
+        style: const TextStyle(
           color: Colors.white,
         ),
       ),

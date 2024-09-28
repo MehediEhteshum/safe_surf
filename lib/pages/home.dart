@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:safe_surf/utils/constants.dart';
 import 'package:safe_surf/widgets/youtube_button.dart';
 
 class HomePage extends StatefulWidget {
@@ -40,7 +41,17 @@ class HomePageState extends State<HomePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            YoutubeButton(),
+            YoutubeButton(
+              ytButtonLabel: 'Youtube Shorts Blocked',
+              ytRouteName: ytShortsBlockedWebRoute,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            YoutubeButton(
+              ytButtonLabel: 'Youtube No Shorts',
+              ytRouteName: ytNoShortsWebRoute,
+            ),
           ],
         ),
       ),

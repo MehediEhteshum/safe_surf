@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:safe_surf/widgets/forbidden_view.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class YouTubeWebViewPage extends StatefulWidget {
-  const YouTubeWebViewPage({super.key});
+class YtShortsBlockedWebview extends StatefulWidget {
+  const YtShortsBlockedWebview({super.key});
 
   @override
-  YouTubeWebViewPageState createState() => YouTubeWebViewPageState();
+  YtShortsBlockedWebviewState createState() => YtShortsBlockedWebviewState();
 }
 
-class YouTubeWebViewPageState extends State<YouTubeWebViewPage> {
+class YtShortsBlockedWebviewState extends State<YtShortsBlockedWebview> {
   late final WebViewController _controller;
   bool _showForbiddenPage = false;
 
@@ -34,26 +34,12 @@ class YouTubeWebViewPageState extends State<YouTubeWebViewPage> {
           onPageFinished: (String url) {
             // Inject JavaScript to detect Shorts dynamically
             _controller.runJavaScript('''
-              // Block or hide Shorts elements
-
-              var shortsTab = document.querySelectorAll("ytm-pivot-bar-item-renderer")[1];
-              if (shortsTab) {
-                shortsTab.style.display = "none";
-              }
-                
-              setInterval(function() {
-                var shortsPage = document.querySelector("shorts-page");
-                if (shortsPage) {
-                  shortsPage.style.display = "none";
-                }
-              }, 10000);
+              // Block Shorts Page
 
               setInterval(function() {
-                var shortsSections = document.querySelectorAll("ytm-reel-shelf-renderer");
-                if (shortsSections) {
-                  shortsSections.forEach((shortsSection) => {
-                    shortsSection.style.display = "none";
-                  });
+                var isShortsPage = window.location.href.includes('shorts');
+                if (isShortsPage) {
+                  document.querySelector("shorts-page").remove();
                 }
               }, 5000);
             ''');
