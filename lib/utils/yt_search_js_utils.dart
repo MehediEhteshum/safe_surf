@@ -1,4 +1,4 @@
-class JsUtils {
+class YtSearchJsUtils {
   static String get interceptSearchInput => '''
     (function() {
       const searchInput = document.querySelector('input.YtSearchboxComponentInput');

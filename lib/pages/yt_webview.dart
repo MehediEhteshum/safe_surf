@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:safe_surf/widgets/forbidden_view.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:safe_surf/services/moderation_service.dart';
+import 'package:safe_surf/utils/yt_search_js_utils.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class YtWebview extends StatefulWidget {
   final String shortsBlockJS;
@@ -8,38 +11,47 @@ class YtWebview extends StatefulWidget {
   const YtWebview({super.key, required this.shortsBlockJS});
 
   @override
-  YtWebviewState createState() => YtWebviewState();
+  State<YtWebview> createState() => _YtWebviewState();
 }
 
-class YtWebviewState extends State<YtWebview> {
-  late final WebViewController _controller;
+class _YtWebviewState extends State<YtWebview> {
   bool _showForbiddenPage = false;
+  final ModerationService _moderationService = ModerationService();
+  InAppWebViewController? _webViewController;
 
-  @override
-  void initState() {
-    super.initState();
+  void _handleJavaScriptHandler(String handlerName, List<dynamic> args) async {
+    debugPrint('JS Handler called: $handlerName with args: $args');
+    String text = args[0];
 
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onNavigationRequest: (NavigationRequest request) {
-            if (request.url.contains('youtube') &&
-                request.url.contains('shorts')) {
-              setState(() {
-                _showForbiddenPage = true;
-              });
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
-          onPageFinished: (String url) {
-            // Inject JavaScript to detect Shorts dynamically
-            _controller.runJavaScript(widget.shortsBlockJS);
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse('https://m.youtube.com'));
+    bool isAppropriate = await _moderationService.checkText(text);
+    debugPrint('Moderation result for "$text": $isAppropriate');
+
+    if (handlerName == 'checkSearchSubmit') {
+      if (!isAppropriate) {
+        _webViewController?.evaluateJavascript(
+            source: YtSearchJsUtils.clearSearchInput);
+        _showToast("Inappropriate text detected.");
+      } else {
+        _webViewController?.evaluateJavascript(
+            source: YtSearchJsUtils.submitSearch);
+      }
+    } else if (handlerName == 'checkSearchInput') {
+      if (!isAppropriate) {
+        _webViewController?.evaluateJavascript(
+            source: YtSearchJsUtils.clearSearchInput);
+        _showToast("Inappropriate text detected.");
+      }
+    }
+  }
+
+  void _showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+    );
   }
 
   @override
@@ -50,8 +62,43 @@ class YtWebviewState extends State<YtWebview> {
       ),
       body: _showForbiddenPage
           ? const ForbiddenView()
-          : WebViewWidget(
-              controller: _controller,
+          : InAppWebView(
+              initialUrlRequest: URLRequest(
+                  url: WebUri.uri(Uri.parse('https://m.youtube.com'))),
+              initialSettings: InAppWebViewSettings(
+                javaScriptEnabled: true,
+                useShouldOverrideUrlLoading: true,
+              ),
+              onWebViewCreated: (InAppWebViewController controller) {
+                _webViewController = controller;
+                controller.addJavaScriptHandler(
+                  handlerName: 'checkSearchInput',
+                  callback: (args) =>
+                      _handleJavaScriptHandler('checkSearchInput', args),
+                );
+                controller.addJavaScriptHandler(
+                  handlerName: 'checkSearchSubmit',
+                  callback: (args) =>
+                      _handleJavaScriptHandler('checkSearchSubmit', args),
+                );
+              },
+              shouldOverrideUrlLoading: (controller, navigationAction) async {
+                var uri = navigationAction.request.url!;
+                if (uri.toString().contains('youtube') &&
+                    uri.toString().contains('shorts')) {
+                  setState(() {
+                    _showForbiddenPage = true;
+                  });
+                  return NavigationActionPolicy.CANCEL;
+                }
+                return NavigationActionPolicy.ALLOW;
+              },
+              onLoadStop: (controller, url) async {
+                await controller.evaluateJavascript(
+                    source: widget.shortsBlockJS);
+                await controller.evaluateJavascript(
+                    source: YtSearchJsUtils.interceptSearchInput);
+              },
             ),
     );
   }
