@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:safe_surf/utils/constants.dart';
+import 'package:safe_surf/widgets/youtube_button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -36,16 +36,13 @@ class HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Safe Surf'),
       ),
-      body: ListView(
-        children: [
-          ListTile(
-            title: const Text('YouTube'),
-            leading: const Icon(Icons.ondemand_video),
-            onTap: () {
-              Navigator.pushNamed(context, ytWebRoute);
-            },
-          ),
-        ],
+      body: const Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            YoutubeButton(),
+          ],
+        ),
       ),
     );
   }
