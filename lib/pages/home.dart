@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:safe_surf/utils/constants.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -35,8 +36,16 @@ class HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Safe Surf'),
       ),
-      body: const Center(
-        child: Text('Your app content goes here'),
+      body: ListView(
+        children: [
+          ListTile(
+            title: const Text('YouTube'),
+            leading: const Icon(Icons.ondemand_video),
+            onTap: () {
+              Navigator.pushNamed(context, ytWebRoute);
+            },
+          ),
+        ],
       ),
     );
   }
