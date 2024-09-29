@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:safe_surf/pages/home.dart';
+import 'package:safe_surf/utils/dependency_container.dart';
 import 'package:safe_surf/utils/routes.dart';
 
-void main() {
+Future<void> main() async {
+  await initializeDependencies();
   runApp(const MyApp());
 }
 

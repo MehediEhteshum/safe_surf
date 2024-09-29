@@ -23,10 +23,11 @@ class _YtWebviewState extends State<YtWebview> {
     debugPrint('JS Handler called: $handlerName with args: $args');
     String text = args[0];
 
-    bool isAppropriate = await _moderationService.checkText(text);
+    bool isAppropriate = await _moderationService.isAppropriateText(text);
     debugPrint('Moderation result for "$text": $isAppropriate');
 
     if (handlerName == 'checkSearchSubmit') {
+      debugPrint('$handlerName Checking search input: $text');
       if (!isAppropriate) {
         _webViewController?.evaluateJavascript(
             source: YtSearchJsUtils.clearSearchInput);
@@ -36,6 +37,7 @@ class _YtWebviewState extends State<YtWebview> {
             source: YtSearchJsUtils.submitSearch);
       }
     } else if (handlerName == 'checkSearchInput') {
+      debugPrint('$handlerName Checking search input: $text');
       if (!isAppropriate) {
         _webViewController?.evaluateJavascript(
             source: YtSearchJsUtils.clearSearchInput);

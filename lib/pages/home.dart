@@ -42,7 +42,7 @@ class HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             YoutubeButton(
-              ytButtonLabel: 'Youtube Shorts Blocked',
+              ytButtonLabel: 'Youtube: Shorts Blocked',
               ytRouteName: ytWebRoute,
               shortsBlockJS: ytShortsBlockedJS,
             ),
@@ -50,7 +50,7 @@ class HomePageState extends State<HomePage> {
               height: 15,
             ),
             YoutubeButton(
-              ytButtonLabel: 'Youtube No Shorts',
+              ytButtonLabel: 'Youtube: No Shorts',
               ytRouteName: ytWebRoute,
               shortsBlockJS: ytNoShortsJS,
             ),
