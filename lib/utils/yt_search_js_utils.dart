@@ -66,4 +66,16 @@ class YtSearchJsUtils {
       }
     })();
   ''';
+
+  static String clearSearchResults = '''
+    (function clearSearchResults() {
+      const searchResults = document.querySelector('ytm-search');
+      if (searchResults) {
+        searchResults.remove();
+        console.log('Search results cleared');
+      } else {
+        console.log('Search results container not found');
+      }
+    })();
+  ''';
 }

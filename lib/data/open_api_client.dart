@@ -16,9 +16,9 @@ class OpenAIApiClient {
       },
       body: jsonEncode({
         'input': content,
-        // 'model': 'omni-moderation-latest',
+        'model': 'omni-moderation-latest',
         // 'model': 'omni-moderation-2024-09-26',
-        'model': 'text-moderation-latest',
+        // 'model': 'text-moderation-latest',
         // 'model': 'text-moderation-stable',
       }),
     );
