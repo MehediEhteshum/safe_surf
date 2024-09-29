@@ -16,29 +16,29 @@ class YtSearchJsUtils {
         });
 
         // Enter key press listener
-        searchInput.addEventListener('keypress', function(e) {
+        searchInput.addEventListener('keydown', function(e) {
           if (e.key === 'Enter') {
             e.preventDefault();
             console.log('Enter key pressed: ' + searchInput.value);
             window.flutter_inappwebview.callHandler('checkSearchSubmit', searchInput.value);
           }
-        }, { passive: false });
+        });
 
         // Form submit listener
         searchForm.addEventListener('submit', function(e) {
           e.preventDefault();
           console.log('Form submit triggered: ' + searchInput.value);
           window.flutter_inappwebview.callHandler('checkSearchSubmit', searchInput.value);
-        }, { passive: false });
+        });
 
         // Search button click listener
         searchButton.addEventListener('click', function(e) {
           e.preventDefault();
           console.log('Search button clicked: ' + searchInput.value);
           window.flutter_inappwebview.callHandler('checkSearchSubmit', searchInput.value);
-        }, { passive: false });
+        });
       } else {
-        console.log('Search input, form, or button not found');
+        console.log('Search elements not found');
       }
     })();
   ''';
@@ -58,12 +58,11 @@ class YtSearchJsUtils {
   static String submitSearch = '''
     (function() {
       const searchForm = document.querySelector('form.YtSearchboxComponentSearchForm');
-      const searchButton = document.querySelector('button.YtSearchboxComponentSearchButton');
-      if (searchForm && searchButton) {
-        searchButton.click();
+      if (searchForm) {
+        searchForm.submit();
         console.log('Search submitted');
       } else {
-        console.log('Search form or button not found');
+        console.log('Search form not found');
       }
     })();
   ''';

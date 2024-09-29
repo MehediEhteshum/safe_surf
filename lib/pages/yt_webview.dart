@@ -84,17 +84,6 @@ class _YtWebviewState extends State<YtWebview> {
                       _handleJavaScriptHandler('checkSearchSubmit', args),
                 );
               },
-              shouldOverrideUrlLoading: (controller, navigationAction) async {
-                var uri = navigationAction.request.url!;
-                if (uri.toString().contains('youtube') &&
-                    uri.toString().contains('shorts')) {
-                  setState(() {
-                    _showForbiddenPage = true;
-                  });
-                  return NavigationActionPolicy.CANCEL;
-                }
-                return NavigationActionPolicy.ALLOW;
-              },
               onLoadStop: (controller, url) async {
                 await controller.evaluateJavascript(
                     source: widget.shortsBlockJS);

@@ -9,10 +9,10 @@ const String ytShortsBlockedJS = '''
     console.log('Checking for Shorts elements');
     var isShortsPage = window.location.href.includes('shorts');
     if (isShortsPage) {
-      var shortsPage = document.querySelector("shorts-video");
+      var shortsPage = document.querySelector("shorts-carousel");
       if (shortsPage) {
         shortsPage.remove();
-        console.log('Shorts page removed');
+        console.log('Shorts page shorts-carousel removed');
       }
     }
   }
@@ -34,10 +34,10 @@ const String ytNoShortsJS = '''
     console.log('Checking for Shorts elements');
     var isShortsPage = window.location.href.includes('shorts');
     if (isShortsPage) {
-      var shortsPage = document.querySelector("shorts-video");
+      var shortsPage = document.querySelector("shorts-carousel");
       if (shortsPage) {
         shortsPage.remove();
-        console.log('Shorts page removed');
+        console.log('Shorts page shorts-carousel removed');
       }
     }
 
