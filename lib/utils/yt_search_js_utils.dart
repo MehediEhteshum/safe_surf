@@ -6,13 +6,19 @@ class YtSearchJsUtils {
       const searchButton = document.querySelector('button.YtSearchboxComponentSearchButton');
       
       if (searchInput && searchForm && searchButton) {
+        let previousValue = '';
+        
         // Input event listener
         searchInput.addEventListener('input', function(e) {
-          const lastChar = e.target.value.slice(-1);
-          if (lastChar === ' ' || lastChar.match(/[.,!?]/)) {
-            console.log('Input event triggered: ' + e.target.value);
-            window.flutter_inappwebview.callHandler('checkSearchInput', e.target.value);
+          const currentValue = e.target.value;
+          const newContent = currentValue.slice(previousValue.length);
+          
+          if (newContent.includes(' ') || newContent.match(/[.,!?]/)) {
+            console.log('New word or punctuation detected: ' + currentValue);
+            window.flutter_inappwebview.callHandler('checkSearchInput', currentValue);
           }
+          
+          previousValue = currentValue;
         });
 
         // Enter key press listener
