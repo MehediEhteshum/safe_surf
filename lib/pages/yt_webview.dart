@@ -16,27 +16,27 @@ class YtWebview extends StatelessWidget {
     debugPrint('JS Handler called: $handlerName with args: $args');
     String text = args[0];
 
-    bool isAppropriateText = await _moderationService.isAppropriateText(text);
-    debugPrint('Moderation result for "$text": $isAppropriateText');
+    _moderationService.isAppropriateText(text).then((isAppropriate) {
+      bool isAppropriateText = isAppropriate;
+      debugPrint('Moderation result for "$text": $isAppropriateText');
 
-    if (handlerName == 'checkSearchSubmit') {
-      debugPrint('$handlerName Checking search input: $text');
-      if (!isAppropriateText) {
-        controller?.evaluateJavascript(
-            source: YtSearchJsUtils.clearSearchResults);
-        _showToast(
-            "Inappropriate text and content detected. Search results removed.");
-      } else {
-        controller?.evaluateJavascript(source: YtSearchJsUtils.submitSearch);
+      if (handlerName == 'checkSearchSubmit') {
+        debugPrint('$handlerName Checking search input: $text');
+        if (!isAppropriateText) {
+          _showToast("Inappropriate text and content detected. Going back...");
+          controller?.goBack();
+        } else {
+          controller?.evaluateJavascript(source: YtSearchJsUtils.submitSearch);
+        }
+      } else if (handlerName == 'checkSearchInput') {
+        debugPrint('$handlerName Checking search input: $text');
+        if (!isAppropriateText) {
+          controller?.evaluateJavascript(
+              source: YtSearchJsUtils.clearSearchInput);
+          _showToast("Inappropriate text detected.");
+        }
       }
-    } else if (handlerName == 'checkSearchInput') {
-      debugPrint('$handlerName Checking search input: $text');
-      if (!isAppropriateText) {
-        controller?.evaluateJavascript(
-            source: YtSearchJsUtils.clearSearchInput);
-        _showToast("Inappropriate text detected.");
-      }
-    }
+    });
   }
 
   void _showToast(String message) {

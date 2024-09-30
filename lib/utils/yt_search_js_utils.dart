@@ -52,6 +52,14 @@ class YtSearchJsUtils {
       } else {
         console.log('Search input not found');
       }
+      
+      const afterSearchInput = document.querySelector('button.search-bar-text');
+      if (afterSearchInput) {
+        afterSearchInput.innerText  = '';
+        console.log('after Search input cleared');
+      } else {
+        console.log('after Search input not found');
+      }
     })();
   ''';
 
@@ -63,18 +71,6 @@ class YtSearchJsUtils {
         console.log('Search submitted');
       } else {
         console.log('Search form not found');
-      }
-    })();
-  ''';
-
-  static String clearSearchResults = '''
-    (function clearSearchResults() {
-      const searchResults = document.querySelector('ytm-search');
-      if (searchResults) {
-        searchResults.remove();
-        console.log('Search results cleared');
-      } else {
-        console.log('Search results container not found');
       }
     })();
   ''';
