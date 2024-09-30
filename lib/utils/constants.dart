@@ -6,13 +6,11 @@ const String ytWebRoute = "/yt-web";
 const String ytShortsBlockedJS = '''
   // Block/remove Shorts page
   function removeShorts() {
-    console.log('Checking for Shorts elements');
     var isShortsPage = window.location.href.includes('shorts');
     if (isShortsPage) {
       var shortsPage = document.querySelector("shorts-carousel");
       if (shortsPage) {
         shortsPage.remove();
-        console.log('Shorts page shorts-carousel removed');
       }
     }
   }
@@ -31,27 +29,23 @@ const String ytShortsBlockedJS = '''
 const String ytNoShortsJS = '''
   // Block/remove Shorts related elements
   function removeShorts() {
-    console.log('Checking for Shorts elements');
     var isShortsPage = window.location.href.includes('shorts');
     if (isShortsPage) {
       var shortsPage = document.querySelector("shorts-carousel");
       if (shortsPage) {
         shortsPage.remove();
-        console.log('Shorts page shorts-carousel removed');
       }
     }
 
     var shortsTab = document.querySelectorAll("ytm-pivot-bar-item-renderer")[1];
     if (shortsTab && shortsTab.innerText === "Shorts") {
       shortsTab.remove();
-      console.log('Shorts tab removed');
     }
 
     var shortsSections = document.querySelectorAll("ytm-reel-shelf-renderer, ytm-rich-section-renderer");
     shortsSections.forEach((shortsSection) => {
       if(shortsSection.innerText.includes("Shorts")){
         shortsSection.remove();
-        console.log('Shorts section removed');
       }
     });
   }

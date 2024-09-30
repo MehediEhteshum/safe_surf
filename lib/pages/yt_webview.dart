@@ -13,15 +13,12 @@ class YtWebview extends StatelessWidget {
 
   void _handleJavaScriptHandler(String handlerName, List<dynamic> args,
       InAppWebViewController? controller) async {
-    debugPrint('JS Handler called: $handlerName with args: $args');
     String text = args[0];
 
     _moderationService.isAppropriateText(text).then((isAppropriate) {
       bool isAppropriateText = isAppropriate;
-      debugPrint('Moderation result for "$text": $isAppropriateText');
 
       if (handlerName == 'checkSearchSubmit') {
-        debugPrint('$handlerName Checking search input: $text');
         if (!isAppropriateText) {
           _showToast("Inappropriate text and content detected. Going back...");
           controller?.goBack();
@@ -29,7 +26,6 @@ class YtWebview extends StatelessWidget {
           controller?.evaluateJavascript(source: YtSearchJsUtils.submitSearch);
         }
       } else if (handlerName == 'checkSearchInput') {
-        debugPrint('$handlerName Checking search input: $text');
         if (!isAppropriateText) {
           controller?.evaluateJavascript(
               source: YtSearchJsUtils.clearSearchInput);

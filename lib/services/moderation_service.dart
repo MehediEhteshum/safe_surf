@@ -12,16 +12,12 @@ class ModerationService {
 
   Future<bool> isAppropriateText(String text) async {
     try {
-      debugPrint('API KEY: ${dotenv.env['OPENAI_API_KEY']}');
       final response = await _apiClient.moderateContent(text);
       final results = response['results'][0];
-
       bool isFlagged = results['flagged'];
-      Map<String, dynamic> categoryScores = results['category_scores'];
-
-      debugPrint('Moderation result for "$text": $isFlagged');
-      debugPrint('Category scores: $categoryScores');
-
+      // Map<String, dynamic> categoryScores = results['category_scores'];
+      debugPrint(
+          'ModerationService: Checked text "$text", result from NLP: $isFlagged');
       return !isFlagged;
     } catch (e) {
       debugPrint('Error in moderation service: $e');
