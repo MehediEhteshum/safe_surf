@@ -27,11 +27,10 @@ class OpenAIApiClient {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      debugPrint('OpenAIApiClient: $data');
       return (data['results'] as List)[0]['flagged'];
     } else {
       debugPrint(
-          'Failed to moderate content: ${response.statusCode}: ${response.body}');
+          'Failed to check for profanity by OpenAI: ${response.statusCode}: ${response.body}');
       final mockData = await _mockOpenAIResponse();
       return (mockData['results'] as List)[0]['flagged'];
     }
@@ -101,11 +100,10 @@ class ProfanityCleanerClient {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      debugPrint('ProfanityCleanerClient: $data');
       return (data["profanities"] as List).isNotEmpty;
     } else {
       debugPrint(
-          'Failed to check for profanity: ${response.statusCode}: ${response.body}');
+          'Failed to check for profanity by ProfanityCleaner: ${response.statusCode}: ${response.body}');
       final mockData = await _mockProfanityResponse();
       return (mockData["profanities"] as List).length * Random().nextInt(2) > 0;
     }
