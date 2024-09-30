@@ -3,17 +3,16 @@ package com.example.safe_surf
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import android.content.Intent
 
 class MainActivity: FlutterActivity() {
-    private val CHANNEL = "com.example.safe_surf/device_admin"
+    private val channelName = "com.example.safe_surf/device_admin"
     private lateinit var channel: MethodChannel
     private lateinit var deviceAdminManager: DeviceAdminManager
     
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)        
 
-        channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
+        channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channelName)
         deviceAdminManager = DeviceAdminManager(this)
 
         channel.setMethodCallHandler { call, result ->

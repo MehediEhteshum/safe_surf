@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.app.Activity
 
-class DeviceAdminManager(private val context: Context) {
+class DeviceAdminManager(context: Context) {
     private val devicePolicyManager: DevicePolicyManager =
         context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
     private val componentName: ComponentName = ComponentName(context, MyDeviceAdminReceiver::class.java)

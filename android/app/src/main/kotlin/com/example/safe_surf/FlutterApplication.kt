@@ -7,7 +7,7 @@ import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.plugin.common.MethodChannel
 
 class FlutterApplication : Application() {
-    lateinit var flutterEngine : FlutterEngine
+    private lateinit var flutterEngine : FlutterEngine
 
     override fun onCreate() {
         super.onCreate()
