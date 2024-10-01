@@ -12,7 +12,7 @@ I have explored 3 avenues to block users from seeing YouTube shorts.
    - Note: Rarely, audio still plays in the background. May be solved by watching DOM using a setInterval function or working on device audio control. Skipped for now.
 
 2. **Custom VPN service:**
-   - Tried to make an app with network layer level permission to monitor device-wide all traffics and control traffics based on keywords in URL.
+   - Tried to make an app with network layer level permission to monitor device-wide all traffics and control traffics based on keywords in URL. In this branch > [yt_dns_block](https://github.com/MehediEhteshum/safe_surf/tree/yt_dns_block)
    - Requires custom VPN using VpnService API, DNS control, HTTP/HTTPS header parsing.
    - Main uncertainty: HTTPS header parsing (e2e encrypted, may violate privacy policy).
    - Decision: Not continuing due to uncertainties.
@@ -51,7 +51,7 @@ Explored 4 avenues to block users from uninstalling the app.
    - Decision: Removed this implementation for app sanity.
 
 3. **Password prompt 2:**
-   - I also tried to detect and secure the specific settings page (e.g. Settings -> Security -> ... -> Device Admin Apps -> (specific) Device Admin App page) so that I can create a password screen over/before that page. Couldn't make much progress.
+   - I also tried to detect and secure the specific settings page (e.g. Settings -> Security -> ... -> Device Admin Apps -> (specific) Device Admin App page) so that I can create a password screen over/before that page. Couldn't make much progress. In this branch > [wip_password](https://github.com/MehediEhteshum/safe_surf/tree/wip_password)
 
 4. **Device owner app:**
    - For test purpose, I made the app as a device owner app in the dev environment via adb commands. This makes the app completely uninstallable and with elevated privileges (as expected). ADB commands: `adb shell dpm set-device-owner com.example.safe_surf/.MyDeviceAdminReceiver` to set it as device owner, and `adb shell dpm remove-active-admin com.example.safe_surf/.MyDeviceAdminReceiver` to remove its device ownership. It can be tested on dev/debug environment.
