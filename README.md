@@ -29,7 +29,7 @@ I have explored 3 avenues to block users from seeing YouTube shorts.
 ### Works:
 - Explored NLP models' docs: TensorFlow.js toxicity, Hugging Face Transformers, Perspective API, OpenAI moderation API.
 - OpenAI moderation API has better accuracy and is free (https://help.openai.com/en/articles/4936833-is-the-moderation-endpoint-free-to-use), but likely down for all or some users including me (https://community.openai.com/t/content-moderation-api-throwing-internal-server-errors/959809/4). I created its API client but it only throws server & quota errors, although it's free.
-- Then, decided to use Profanity Cleaner API instead after some research.
+- **(Successful)** Then, decided to use Profanity Cleaner API instead after some research.
 - Feature implemented in the YouTube search bar - (similarly, can be implemented in a chat/message box):
   - Fast detection (low latency) and removal of bad words without affecting typing fluidity.
   - Prevents submission results if a 'bad' search is submitted before detection due to API latency.
