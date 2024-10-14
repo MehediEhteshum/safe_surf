@@ -9,7 +9,6 @@ I have explored 3 avenues to block users from seeing YouTube shorts.
    - Initially tried URL parsing for finding words (e.g. YouTube, shorts).
    - m.youtube doesn't trigger a full page load. Shorts content likely loads dynamically without causing an actual navigation event that the WebView is listening for.
    - Finally, blocked Shorts page, Shorts tab, and Shorts section by removing related DOM elements using JS injection.
-   - Note: Rarely, audio still plays in the background. May be solved by watching DOM using a setInterval function or working on device audio control. Skipped for now.
 
 2. **Custom VPN service:**
    - Tried to make an app with network layer level permission to monitor device-wide all traffics and control traffics based on keywords in URL. In this branch > [yt_dns_block](https://github.com/MehediEhteshum/safe_surf/tree/yt_dns_block)
@@ -57,10 +56,14 @@ Explored 4 avenues to block users from uninstalling the app.
    - For test purpose, I made the app as a device owner app in the dev environment via adb commands. This makes the app completely uninstallable and with elevated privileges (as expected). ADB commands: `adb shell dpm set-device-owner com.example.safe_surf/.MyDeviceAdminReceiver` to set it as device owner, and `adb shell dpm remove-active-admin com.example.safe_surf/.MyDeviceAdminReceiver` to remove its device ownership. It can be tested on dev/debug environment.
    - However, in reality, this app might violate app platform policy, require factory reset or special provisioning of the device, and deployment to a private app store. Another solution may be Android Enterprise (https://www.android.com/enterprise/) - which might require special permission devices, enrollments, certifications, etc.
 
-I can imagine some use cases of such an app. It would be interesting to get more insights on its implementation, use cases, etc.
-For the purpose of this app, I think the first approach is fair enough.
-
 ### Related findings:
 - Non-device admin apps cannot directly detect its uninstallation attempts.
 - Apps can register broadcast receiver for ACTION_PACKAGE_REMOVED intent (notifies after uninstallation, not during attempt).
 - By design, Android does not provide a way for regular + admin apps to prevent or intercept their own uninstallation process. This is a security feature to ensure users have control over the apps installed on their devices.
+
+<h2>Support</h2>
+
+☕☕☕ If this project helps you understand the concepts around the topic, please consider buying me a coffee
+<br>
+☕☕☕
+<a href="https://coindrop.to/mehedi_ehteshum" target="_blank"><img src="https://coindrop.to/embed-button.png" style="border-radius: 10px; height: 57px !important;width: 229px !important;" alt="Coindrop.to me"></img></a>
